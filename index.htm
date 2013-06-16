@@ -1,0 +1,185 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link href="CSS/divinatory.css" rel="stylesheet" type="text/css" />
+    <script src="JS/liuyao.js" type="text/javascript"></script>
+    <script src="JS/ObjectSp.js" type="text/javascript"></script>
+    <script src="JS/DateTimeSp.js" type="text/javascript"></script>
+    <script src="JS/ganZhi.js" type="text/javascript"></script>
+    <script type="text/javascript">
+
+        function compute() {
+            try {
+                LiuYao.generateDivinatory();
+
+                var year = parseInt(ObjectSp.fetchValue('qi_gua_year'));
+                var month = parseInt(ObjectSp.fetchValue('qi_gua_month'));
+                var date = parseInt(ObjectSp.fetchValue('qi_gua_date'));
+                var hour = parseInt(ObjectSp.fetchValue('qi_gua_hour'));
+                var ganZhiYear = GanZhi.computeYear(year, month, date);
+                var ganZhiMonth = GanZhi.computeMonth(ganZhiYear, month, date);
+                var ganZhiDate = GanZhi.computeDate(year, month, date);
+                var ganZhiHour = GanZhi.computeHour(ganZhiDate, hour);
+                var kongWang = GanZhi.computeKongWang(ganZhiDate);
+                var qiGuaTime = "起卦时间:"
+                            + ganZhiYear + "年 " + ganZhiMonth + "月 "
+                            + ganZhiDate + "日 " + ganZhiHour + "时 "
+                            + " [空亡:" + kongWang+"]";
+                ObjectSp.setInnerHtml('qi_gua_time', qiGuaTime);
+            } catch (e) {
+                alert(e.Message);
+            }
+        }
+
+        function initialize() {
+            initializeTime('qi_gua_year', 1924, 400);
+            initializeTime('qi_gua_month', 1, 12);
+            initializeTime('qi_gua_date', 1, 31);
+            initializeTime('qi_gua_hour', 0, 24,
+                ['-子', '-丑', '-丑', '-寅', '-寅', '-卯', '-卯', '-辰', '-辰', '-巳', '-巳',
+                 '-午', '-午', '-未', '-未', '-申', '-申', '-酉', '-酉', '-戌', '-戌', '-亥', '-亥', '-子']);
+            initializeTime('qi_gua_minute', 0, 60);
+        }
+
+        function initializeDate() {
+            var year = ObjectSp.fetchValue('qi_gua_year');
+            var month = parseInt(ObjectSp.fetchValue('qi_gua_month'));
+            var days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month - 1];
+            if (month === 2 && DateTimeSp.isLeapYear(parseInt(year))) {
+                days += 1;
+            }
+            initializeTime('qi_gua_date', 1, days);
+        }
+
+        function initializeTime(selectId, beginTime, span, suffixs) {
+            /// <summary>Initialize year to option of the select object.</summary>
+            /// <param name="selectId" type="string">select Id for dock option that generate by begin time and span.</param>
+            /// <param name="beginTime" type="int">Begin time</param>
+            /// <param name="span" type="int">Times between begin time and end time.</param>
+            /// <param name="suffixs" type="string[]">Suffix of begin time.</param>
+            var options = "";
+            var hasSuffix = true;
+            if (ObjectSp.isUndefinedNull(suffixs)) {
+                hasSuffix = false;
+            }
+            for (var i = 0; i < span; i++) {
+                var time = beginTime + i;
+                var text = time.toString();
+                if (hasSuffix) {
+                    text += suffixs[i];
+                }
+                options += '<option value="' + time.toString() + '">'
+                            + text
+                            + '</option>';
+            }
+
+            ObjectSp.fetchObjcet(selectId).innerHTML = options;
+        }
+
+        function showFuShen() {
+            var checked = ObjectSp.fetchValue("use_fu_shen", "checked", document);
+            ObjectSp.setVisible("na_jia_fu_shen", checked, document);
+            ObjectSp.setVisible("liu_qin_fu_shen", checked, document);
+        }
+
+        window.onload = function () {
+            initialize();
+        }
+    </script>
+</head>
+<body>
+    <div>
+        <label>
+            时间:</label><select id="qi_gua_year">
+            </select><label>
+                年</label>
+        <select id="qi_gua_month" onchange="initializeDate();">
+        </select><label>
+            月</label>
+        <select id="qi_gua_date">
+        </select><label>
+            日</label>
+        <select id="qi_gua_hour">
+        </select><label>
+            时</label>
+        <select id="qi_gua_minute">
+        </select><label>
+            分</label>
+    </div>
+    <div>
+        <div>
+            <label>
+                上卦</label><select id="up_divinatory_index">
+                    <option value="1">乾一</option>
+                    <option value="2">兑二</option>
+                    <option value="3">离三</option>
+                    <option value="4">震四</option>
+                    <option value="5">巽五</option>
+                    <option value="6">坎六</option>
+                    <option value="7">艮七</option>
+                    <option value="8">坤八</option>
+                </select>
+            <label>
+                下卦</label><select id="down_divinatory_index">
+                    <option value="1">乾一</option>
+                    <option value="2">兑二</option>
+                    <option value="3">离三</option>
+                    <option value="4">震四</option>
+                    <option value="5">巽五</option>
+                    <option value="6">坎六</option>
+                    <option value="7">艮七</option>
+                    <option value="8">坤八</option>
+                </select>
+            <label>
+                变爻:</label>
+            </label><input id="change_line_1" type="checkbox">初爻</input>
+            </label><input id="change_line_2" type="checkbox">二爻</input>
+            </label><input id="change_line_3" type="checkbox">三爻</input>
+            </label><input id="change_line_4" type="checkbox">四爻</input>
+            </label><input id="change_line_5" type="checkbox">五爻</input>
+            </label><input id="change_line_6" type="checkbox">六爻</input>
+        </div>
+        <div>
+            <input id="ButtonGenerate" type="button" value="测算" onclick="compute();" />
+            <input id="use_fu_shen" type="checkbox" checked="checked" onchange="showFuShen();">伏神</input>
+        </div>
+    </div>
+    <div id="divinatory_info" class="divinatory-info">
+        <div id='qi_gua_time' class="qi-gua-time">
+        </div>
+        <div id="divinatory_info_main" class="divinatory-info-main">
+            <div id="divinatory_title_main" class="divinatory-title">
+            </div>
+            <div>
+                <div id="liu_shen" class="liu-shen">
+                </div>
+                <div id="na_jia_fu_shen" class="na-jia">
+                </div>
+                <div id="liu_qin_fu_shen" class="liu-qin">
+                </div>
+                <div id="divinatory_main" class="divinatory">
+                </div>
+                <div id="divinatory_change_lines" class="divinatory-change-lines">
+                </div>
+                <div id="na_jia_main" class="na-jia">
+                </div>
+                <div id="liu_qin_main" class="liu-qin">
+                </div>
+            </div>
+        </div>
+        <div id="divinatory_info_change" class="divinatory-info-change">
+            <div id="divinatory_title_change" class="divinatory-title">
+            </div>
+            <div>
+                <div id="divinatory_change" class="divinatory">
+                </div>
+                <div id="na_jia_change" class="na-jia">
+                </div>
+                <div id="liu_qin_change" class="liu-qin">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

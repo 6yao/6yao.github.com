@@ -1,0 +1,64 @@
+﻿body
+{
+}
+
+.divinatory
+{
+    float: left;
+    line-height: 40px;
+}
+
+.divinatory-info
+{
+    font-size: x-large;
+}
+
+.divinatory-change-lines
+{
+    line-height: 41px;
+    float: left;
+}
+
+.divinatory-info-main
+{
+    float: left;
+}
+
+.divinatory-info-change
+{
+    padding-left: 100px;
+    float: left;
+}
+
+.divinatory-title
+{
+    font-weight: bold;
+    color: #FF0000;
+    text-align: center;
+}
+
+.na-jia
+{
+    line-height: 41px;
+    float: left;
+}
+
+.liu-qin
+{
+    line-height: 41px;
+    float: left;
+}
+
+.liu-shen
+{
+    line-height: 41px;
+    float: left;
+    padding-right: 20px;
+}
+
+.qi-gua-time
+{
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
