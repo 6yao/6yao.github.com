@@ -55,7 +55,7 @@ GanZhi.computeDate = function (year, month, date) {
         yearTemp = yearTemp - parseInt(((yearTemp - 2004) + 79) / 80) * 80;
     }
 
-    var baseGanZhiIndex = (yearTemp - 1924) / 10;
+    var baseGanZhiIndex = parseInt((yearTemp - 1924) / 10);
     var baseGanZhi = newYearGanZhis[baseGanZhiIndex];
     var baseGanZhiJiaZiIndex = GanZhi.__computeJiaZiIndex(baseGanZhi);
     var baseYear = [1924, 1934, 1944, 1954, 1964, 1974, 1984, 1994][baseGanZhiIndex];
