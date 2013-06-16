@@ -59,7 +59,7 @@ GanZhi.computeDate = function (year, month, date) {
     var baseGanZhi = newYearGanZhis[baseGanZhiIndex];
     var baseGanZhiJiaZiIndex = GanZhi.__computeJiaZiIndex(baseGanZhi);
     var baseYear = [1924, 1934, 1944, 1954, 1964, 1974, 1984, 1994][baseGanZhiIndex];
-    var yearSpanDays = (yearTemp - baseYear) * 5;
+    var yearSpanDays = parseInt((yearTemp - baseYear) * 5);
     for (var yearIndex = 1; yearIndex <= yearTemp - baseYear; yearIndex++) {
         if (DateTimeSp.isLeapYear(baseYear + yearIndex)) {
             yearSpanDays += 1;
