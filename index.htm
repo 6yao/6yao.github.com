@@ -18,14 +18,14 @@
                 var date = parseInt(ObjectSp.fetchValue('qi_gua_date'));
                 var hour = parseInt(ObjectSp.fetchValue('qi_gua_hour'));
                 var ganZhiYear = GanZhi.computeYear(year, month, date);
-                var ganZhiMonth = GanZhi.computeMonth(ganZhiYear, month, date);
+                var ganZhiMonth = GanZhi.computeMonth(year, month, date);
                 var ganZhiDate = GanZhi.computeDate(year, month, date);
                 var ganZhiHour = GanZhi.computeHour(ganZhiDate, hour);
                 var kongWang = GanZhi.computeKongWang(ganZhiDate);
                 var qiGuaTime = "起卦时间:"
                             + ganZhiYear + "年 " + ganZhiMonth + "月 "
                             + ganZhiDate + "日 " + ganZhiHour + "时 "
-                            + " [空亡:" + kongWang+"]";
+                            + " [空亡:" + kongWang + "]";
                 ObjectSp.setInnerHtml('qi_gua_time', qiGuaTime);
             } catch (e) {
                 alert(e.Message);
@@ -33,7 +33,7 @@
         }
 
         function initialize() {
-            initializeTime('qi_gua_year', 1924, 400);
+            initializeTime('qi_gua_year', 1900, 200);
             initializeTime('qi_gua_month', 1, 12);
             initializeTime('qi_gua_date', 1, 31);
             initializeTime('qi_gua_hour', 0, 24,
