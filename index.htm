@@ -7,6 +7,7 @@
     <script src="JS/ObjectSp.js" type="text/javascript"></script>
     <script src="JS/DateTimeSp.js" type="text/javascript"></script>
     <script src="JS/ganZhi.js" type="text/javascript"></script>
+    <script src="JS/StringSp.js" type="text/javascript"></script>
     <script type="text/javascript">
 
         function compute() {
@@ -40,6 +41,14 @@
                 ['-子', '-丑', '-丑', '-寅', '-寅', '-卯', '-卯', '-辰', '-辰', '-巳', '-巳',
                  '-午', '-午', '-未', '-未', '-申', '-申', '-酉', '-酉', '-戌', '-戌', '-亥', '-亥', '-子']);
             initializeTime('qi_gua_minute', 0, 60);
+            var now = DateTimeSp.getCurrentDateTime().split(' ');
+            var date = now[0].split('-');
+            var time = now[2].split(':');
+            document.getElementById('qi_gua_year').value = date[0];
+            document.getElementById('qi_gua_month').value = date[1];
+            document.getElementById('qi_gua_date').value = date[2];
+            document.getElementById('qi_gua_hour').value =parseInt(time[0]);
+            document.getElementById('qi_gua_minute').value = time[1];
         }
 
         function initializeDate() {
@@ -166,6 +175,8 @@
                 </div>
                 <div id="liu_qin_main" class="liu-qin">
                 </div>
+                 <div id="shi_ying_main" class="shi-ying">
+                </div>
             </div>
         </div>
         <div id="divinatory_info_change" class="divinatory-info-change">
@@ -177,6 +188,8 @@
                 <div id="na_jia_change" class="na-jia">
                 </div>
                 <div id="liu_qin_change" class="liu-qin">
+                </div>
+                <div id="shi_ying_change" class="shi-ying">
                 </div>
             </div>
         </div>

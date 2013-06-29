@@ -7,6 +7,22 @@ var LiuYao = {};
 //////////////////////////////////////////////////////////////////////////
 LiuYao.Para = {};
 
+LiuYao.Para.ganZhis =
+{
+    '子': 1, '丑': 2, '寅': 3, '卯': 4, '辰': 5, '巳': 6,
+    '午': 7, '未': 8, '申': 9, '酉': 10, '戌': 11, '亥': 12
+};
+LiuYao.Para.liuHes =
+{
+    '子': '丑', '寅': '亥', '卯': '戌', '辰': '酉', '巳': '申', '午': '未',
+    '丑': '子', '亥': '寅', '酉': '辰', '戌': '卯', '申': '巳', '未': '午'
+};
+LiuYao.Para.liuChongs =
+{
+    '子': '午', '丑': '未', '寅': '申', '卯': '酉', '辰': '戌', '巳': '亥',
+    '午': '子', '未': '丑', '申': '寅', '酉': '卯', '戌': '辰', '亥': '巳'
+};
+
 LiuYao.Para.pureDivinatory_ = [
      '111', //乾
     '110', //兑
@@ -58,6 +74,28 @@ LiuYao.exception_ = null;
 //////////////////////////////////////////////////////////////////////////
 //Private function
 //////////////////////////////////////////////////////////////////////////
+LiuYao.__computeDivinatoryFeature = function (up, down) {
+    /// <summary>Compute divinatory feature by naJias.</summary>
+    /// <param name="up" type="int">Up divinatory value.1-8</param>
+    /// <param name="down" type="int">Down divinatory value.1-8</param> 
+    var naJias = LiuYao.computeNaJia(up, down).split('</br>');
+    var feature = '';
+    if (LiuYao.__isLiuHe(naJias)) {
+        return '(六合)';
+    }
+    else if (LiuYao.__isLiuChong(naJias)) {
+        return '(六冲)';
+    }
+    else if (LiuYao.__isYouHun(up, down)) {
+        return '(游魂)';
+    }
+    else if (LiuYao.__isGuiHun(up, down)) {
+        return '(归魂)';
+    }
+    return '';
+}
+
+
 LiuYao.__computePureDivinatoryIndex = function (index, changeLines) {
     /// <summary>Compute pure divinatory index by change lines.</summary>
     /// <param name="index" type="int">Divinatory index.1-8</param> 
@@ -113,6 +151,66 @@ LiuYao.__generatePureDivinatory = function (index) {
     return divinatoryImage;
 }
 
+LiuYao.__isGuiHun = function (up, down) {
+    /// <summary>Check is gui hun by up value and down value</summary>
+    /// <param name="up" type="int">Up divinatory value.1-8</param>
+    /// <param name="down" type="int">Down divinatory value.1-8</param> 
+    var upTemp = up;
+    var downTemp = down;
+
+    if (up <= 4 && down <= 4) {
+        var shiYao = [5, 3, 4][Math.abs(up - down) - 1];
+        if (shiYao === 3) {
+            return true;
+        }
+    }
+    return false;
+}
+
+LiuYao.__isLiuHe = function (naJias) {
+    for (var index = 0; index < 3; index++) {
+        var diZhiDown = naJias[index].substring(2, 1);
+        var diZhiUp = naJias[index + 3].substring(2, 1);
+        if (LiuYao.Para.liuHes[diZhiDown] !== diZhiUp) {
+            return false;
+        }
+    }
+    return true;
+}
+
+LiuYao.__isLiuChong = function (naJias) {
+
+    for (var index = 0; index < 3; index++) {
+        var diZhiDown = naJias[index].substring(2, 1);
+        var diZhiUp = naJias[index + 3].substring(2, 1);
+        if (LiuYao.Para.liuChongs[diZhiDown] !== diZhiUp) {
+            return false;
+        }
+    }
+    return true;
+}
+
+
+
+
+LiuYao.__isYouHun = function (up, down) {
+    /// <summary>Check is you hun  by up value and down value</summary>
+    /// <param name="up" type="int">Up divinatory value.1-8</param>
+    /// <param name="down" type="int">Down divinatory value.1-8</param> 
+    var upTemp = up;
+    var downTemp = down;
+
+    if (up > 4 || down > 4) {
+
+        upTemp = up > 4 ? (up - 4) : up;
+        downTemp = down > 4 ? (down - 4) : down;
+        var shiYao = [1, 4, 2, 3][Math.abs(upTemp - downTemp)];
+        if (shiYao === 4) {
+            return true;
+        }
+    }
+    return false;
+}
 
 //////////////////////////////////////////////////////////////////////////
 //Public function
@@ -146,8 +244,11 @@ LiuYao.computeDivinatoryTitle = function (up, down) {
     var complexDivinatoryIndex = up * 10 + down;
     for (var i = 0; i < LiuYao.Para.divinatoryTable_.length; i++) {
         if (!ObjectSp.isUndefinedNull(LiuYao.Para.divinatoryTable_[i][complexDivinatoryIndex])) {
-            return LiuYao.__getPureDivinatoryName(i + 1, true) + "宫"
-                   + "   " + LiuYao.Para.divinatoryTable_[i][complexDivinatoryIndex] + "</br>";
+            var title = LiuYao.__getPureDivinatoryName(i + 1, true) + "宫"
+                    + "   " + LiuYao.Para.divinatoryTable_[i][complexDivinatoryIndex]
+                    + "   " + LiuYao.__computeDivinatoryFeature(up, down)
+                    + "</br>";
+            return title;
         }
     }
 }
@@ -220,6 +321,43 @@ LiuYao.generateComplexDivinatory = function (up, down) {
     return upDivinatory + downDivinatory;
 }
 
+LiuYao.computeShiYing = function (up, down) {
+    /// <summary>Compute shie ying by up value and down value</summary>
+    /// <param name="up" type="int">Up divinatory value.1-8</param>
+    /// <param name="down" type="int">Down divinatory value.1-8</param> 
+    var upTemp = up;
+    var downTemp = down;
+
+    var shiYao = 6;
+    if (up === down) {
+        shiYao = 6;
+    }
+    else if (up <= 4 && down <= 4) {
+        shiYao = [5, 3, 4][Math.abs(up - down) - 1];
+    }
+    else {
+        upTemp = up > 4 ? (up - 4) : up;
+        downTemp = down > 4 ? (down - 4) : down;
+        shiYao = [1, 4, 2, 3][Math.abs(upTemp - downTemp)];
+    }
+
+    var yingYao = (parseInt(shiYao.toString().substring(0, 1)) + 3/*intervale between shiyao and yingyao*/) % 6;
+    yingYao = yingYao == 0 ? 6 : yingYao; //0 equals 6 ying yao.
+    var shiYing = "";
+    for (var index = 6; index >= 1; index--) {
+        if (index === parseInt(shiYao)) {
+            shiYing += "世" + "</br>";
+        }
+        else if (index === parseInt(yingYao)) {
+            shiYing += "应" + "</br>";
+        }
+        else {
+            shiYing += "</br>";
+        }
+    }
+    return shiYing;
+}
+
 //////////////////////////////////////////////////////////////////////////
 //UI
 //////////////////////////////////////////////////////////////////////////
@@ -250,6 +388,9 @@ LiuYao.generateDivinatory = function () {
 
     var liuQinMain = LiuYao.computeLiuQin(naJiaMain.split('</br>'), palace);
     document.getElementById('liu_qin_main').innerHTML = liuQinMain;
+
+    var shiYingMain = LiuYao.computeShiYing(up, down);
+    document.getElementById('shi_ying_main').innerHTML = shiYingMain;
 
     var changeLinesUp = [0, 0, 0];
     var changeLinesDown = [0, 0, 0];
@@ -284,4 +425,6 @@ LiuYao.generateDivinatory = function () {
     var liuQinChange = LiuYao.computeLiuQin(naJiaChange.split('</br>'), palace);
     document.getElementById('liu_qin_change').innerHTML = liuQinChange;
 
+    var shiYingChange = LiuYao.computeShiYing(changeUp, changeDown);
+    document.getElementById('shi_ying_change').innerHTML = shiYingChange;
 }

@@ -91,7 +91,8 @@ GanZhi.computeDate = function (year, month, date) {
     var baseGanZhiJiaZiIndex = GanZhi.__computeJiaZiIndex(baseGanZhi);
     var baseYear = [1924, 1934, 1944, 1954, 1964, 1974, 1984, 1994][baseGanZhiIndex];
     var yearSpanDays = parseInt((yearTemp - baseYear) * 5);
-    for (var yearIndex = 1; yearIndex <= yearTemp - baseYear; yearIndex++) {
+   
+    for (var yearIndex = 0; yearIndex <= yearTemp - baseYear; yearIndex++) {
         if (DateTimeSp.isLeapYear(baseYear + yearIndex)) {
             yearSpanDays += 1;
         }
@@ -105,7 +106,7 @@ GanZhi.computeDate = function (year, month, date) {
         }
     }
 
-    var ganZhiJiaZiIndex = (baseGanZhiJiaZiIndex + (yearSpanDays + monthSpanDays) % 60 - 1) % 60; //Substract self.
+    var ganZhiJiaZiIndex = (baseGanZhiJiaZiIndex + yearSpanDays + monthSpanDays-1) % 60; //Substract self.
     return GanZhi.Para.jiaZiTable[ganZhiJiaZiIndex];
 }
 
@@ -155,8 +156,8 @@ GanZhi.computeMonth = function (year, month, date) {
     var yinMonthIndex = GanZhi.__computeJiaZiIndex(yinMonthGanZhi);
 
     //    var changeDate = monthChangDates[month];
-    var changeTie = GanZhi.__computeJieQiChangeTime(year,(month+12-1)%12);
-    var changeDate = monthChangDates[month];
+    var changeTime = GanZhi.__computeJieQiChangeTime(year,(month+12-1)%12);
+    var changeDate = changeTime.date;
 
     var monthSpan = (month + 10) % 12;
     if (date < changeDate) {

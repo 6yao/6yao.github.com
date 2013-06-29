@@ -89,9 +89,9 @@ DateTimeSp.getCurrentYear=function() {
 DateTimeSp.getCurrentDate=function() {
     /// <summary>Get current date.</summary>
     var date = "";
-    var year = GetCurrentYear();
+    var year = DateTimeSp.getCurrentYear();
     var nowTime = new Date();
-    date = year + "-" + nowTime.getMonth() + "-" + nowTime.getMinutes();
+    date = year + "-" + (nowTime.getMonth()+1) + "-" + nowTime.getDate();
     return date;
 }
 
